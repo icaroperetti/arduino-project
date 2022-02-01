@@ -6,6 +6,7 @@
 
 
 Servo servo;
+bool isLocked;
 Password senha = Password("123");      // Senha para liberação de acesso
 Password password2 = Password("20123345");
 
@@ -27,12 +28,14 @@ byte pinolinha[linha] = {3, 4, 5, 6};       // Declara os pinos de interpretaç�
 byte pinocoluna[coluna] = {8, 9, 10, 11};      // Declara os pinos de interpretação das coluna
 
 //INICIALIZAÇÃO DO TECLADO
-
 Keypad keypad = Keypad(makeKeymap(keys), pinolinha, pinocoluna, linha, coluna);
 
 void setup() {
   pinMode(7, OUTPUT);
+
   servo.attach(7);
+  servo.write(0);
+
   Serial.begin(9600);
 
   lcd.init();
@@ -43,7 +46,6 @@ void setup() {
 
   keypad.addEventListener(keypadEvent);
   keypad.setDebounceTime(5);         // Tempo de atraso para leitura das teclas.
-  servo.write(0);
 }
 
 void loop() {
@@ -60,30 +62,44 @@ void keypadEvent(KeypadEvent eKey) {
       switch (eKey) {
         case 'C': verificasenha();
           break;
-        case '#': Serial.flush();
+        case '#': lockSafe();
           break;
         default:
           senha.append(eKey);
           password2.append(eKey);
       }
+      lcd.print(eKey);
   }
 }
 
 
+void lockSafe() {
+  lcd.setCursor(0, 0);
+  lcd.print("Cofre trancado");
+  isLocked=true;
+  servo.write(0);
+  delay(1000);
+  lcd.clear();
+  senha.reset();
+  password2.reset();
+}
+
 // Função que verifica se a senha está correta
 void verificasenha() {
   Serial.println("Verificando, aguarde...");
-  if (senha.evaluate() || password2.evaluate()) {
+ "  if (senha.evaluate() || password2.evaluate()) {
     lcd.setCursor(0, 0);
     Serial.print("Senha Correta\n");
     lcd.print("Acesso Permitido!");
-    servo.write(82);
+    isLocked = false;
+    servo.write(90);
   } else {
-    Serial.println("Senha incorreta");
-    lcd.setCursor(0, 0);
-    lcd.print("Senha incorreta ");
-    servo.write(0);
-    senha.reset();
-    password2.reset();
+    if (isLocked != false) {
+      Serial.println("Senha incorreta");
+      lcd.setCursor(0, 0);
+      lcd.print("Senha incorreta ");
+      senha.reset();
+      password2.reset();
+    }
   }
 }
