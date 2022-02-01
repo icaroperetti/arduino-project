@@ -76,7 +76,7 @@ void keypadEvent(KeypadEvent eKey) {
 void lockSafe() {
   lcd.setCursor(0, 0);
   lcd.print("Cofre trancado");
-  isLocked=true;
+  isLocked = true;
   servo.write(0);
   delay(1000);
   lcd.clear();
@@ -87,7 +87,7 @@ void lockSafe() {
 // Função que verifica se a senha está correta
 void verificasenha() {
   Serial.println("Verificando, aguarde...");
- "  if (senha.evaluate() || password2.evaluate()) {
+  if (senha.evaluate() || password2.evaluate()) {
     lcd.setCursor(0, 0);
     Serial.print("Senha Correta\n");
     lcd.print("Acesso Permitido!");
