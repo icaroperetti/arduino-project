@@ -1,7 +1,8 @@
-#include <Password.h>  // Inclui biblioteca Password.h
-#include <Keypad.h>    // Inclui biblioteca Keypa.h
-#include <Servo.h>
-#include <Wire.h>
+//Inclusão de bibliotecas
+#include <Password.h>  
+#include <Keypad.h>    
+#include <Servo.h> 
+//#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
  
 Servo servo;
@@ -27,11 +28,11 @@ char keys[linha][coluna] = {
 byte pinolinha[linha] = { 3, 4, 5, 6 };      // Declara os pinos das linha
 byte pinocoluna[coluna] = { 8, 9, 10, 11 };  // Declara os pinos das coluna
  
-//INICIALIZAÇÃO DO TECLADO
+//Inicializar o teclado.
 Keypad keypad = Keypad(makeKeymap(keys), pinolinha, pinocoluna, linha, coluna);
  
 void setup() {
-  //Pino do servo motor
+  //Pino do servo
   pinMode(7, OUTPUT);
  
   servo.attach(7);
@@ -42,7 +43,7 @@ void setup() {
   lcd.init();
   lcd.backlight();
   lcd.print("Digite sua senha:");
- 
+
  
   keypad.addEventListener(getInput);
   keypad.setDebounceTime(5);  // Delay para leitura das teclas.
@@ -59,8 +60,6 @@ void getInput(KeypadEvent eKey) {
  
   switch (keypad.getState()) {
     case PRESSED:
-      Serial.print("Digitado: ");
-      Serial.println(eKey);
       delay(50);
       switch (eKey) {
         case 'C':
@@ -99,7 +98,6 @@ void lockSafe() {
  
 // Função que verifica se a senha está correta
 void checkPassword() {
-  Serial.println("Verificando...");
   lcd.clear();
   if (isLocked == true) {
     if (password.evaluate() || password2.evaluate()) {
