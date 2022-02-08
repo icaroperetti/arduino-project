@@ -1,21 +1,21 @@
 #include <Password.h>  // Inclui biblioteca Password.h
 #include <Keypad.h>    // Inclui biblioteca Keypa.h
 #include <Servo.h>
-// #include <Wire.h>
+#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-
+ 
 Servo servo;
 bool isLocked = true;
 Password password = Password("123");
 Password password2 = Password("112233");
-
-
+ 
+ 
 //Código detectado por meio de uma varredura procurando dispositivos I2c
 LiquidCrystal_I2C lcd(0x27, 16, 2); //Inicialização do lcd
-
+ 
 const byte linha = 4;   // Define número de linhas
 const byte coluna = 4;  // Define número de colunas
-
+ 
 // Relaciona linha e colunas para determinar os caracteres
 char keys[linha][coluna] = {
   { '1', '2', '3', 'A' },
@@ -23,40 +23,40 @@ char keys[linha][coluna] = {
   { '7', '8', '9', 'C' },
   { '*', '0', '#', 'D' }
 };
-
+ 
 byte pinolinha[linha] = { 3, 4, 5, 6 };      // Declara os pinos das linha
 byte pinocoluna[coluna] = { 8, 9, 10, 11 };  // Declara os pinos das coluna
-
+ 
 //INICIALIZAÇÃO DO TECLADO
 Keypad keypad = Keypad(makeKeymap(keys), pinolinha, pinocoluna, linha, coluna);
-
+ 
 void setup() {
   //Pino do lcd
   pinMode(7, OUTPUT);
-
+ 
   servo.attach(7);
   servo.write(0);
-
+ 
   Serial.begin(9600);
-
+ 
   lcd.init();
   lcd.backlight();
   lcd.print("Digite sua senha:");
-  
-
+ 
+ 
   keypad.addEventListener(getInput);
   keypad.setDebounceTime(5);  // Delay para leitura das teclas.
 }
-
+ 
 void loop() {
   keypad.getKey();
 }
-
+ 
 // Captura teclas pressionadas e aguarda confirmação para verificar a senha
 void getInput(KeypadEvent eKey) {
   Serial.print("isLocked");
   Serial.println(isLocked);
-
+ 
   switch (keypad.getState()) {
     case PRESSED:
       Serial.print("Digitado: ");
@@ -76,11 +76,11 @@ void getInput(KeypadEvent eKey) {
             lcd.setCursor(0, 1);
             lcd.print(eKey);
           }
-          
+ 
       }
   }
 }
-
+ 
 //Função para trancar o cofre
 void lockSafe() {
   lcd.clear();
@@ -89,14 +89,14 @@ void lockSafe() {
   isLocked = true;
   servo.write(0);
   delay(2000);
-
+ 
   lcd.setCursor(0, 0);
   lcd.print("Digite sua senha:");
-  
+ 
   password.reset();
   password2.reset();
 }
-
+ 
 // Função que verifica se a senha está correta
 void checkPassword() {
   Serial.println("Verificando...");
@@ -112,10 +112,10 @@ void checkPassword() {
       if (isLocked != false) {
         lcd.clear();
         Serial.println("Senha incorreta");
-      
+ 
         lcd.print("Senha incorreta ");
         delay(2000);
-      
+ 
         lcd.clear();
         lcd.print("Digite sua senha:");
         password.reset();
