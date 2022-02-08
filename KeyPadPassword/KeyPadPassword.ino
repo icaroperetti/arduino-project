@@ -31,7 +31,7 @@ byte pinocoluna[coluna] = { 8, 9, 10, 11 };  // Declara os pinos das coluna
 Keypad keypad = Keypad(makeKeymap(keys), pinolinha, pinocoluna, linha, coluna);
  
 void setup() {
-  //Pino do lcd
+  //Pino do servo motor
   pinMode(7, OUTPUT);
  
   servo.attach(7);
